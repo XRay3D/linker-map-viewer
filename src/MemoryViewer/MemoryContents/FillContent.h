@@ -2,7 +2,7 @@
 #include "MemoryContents/MemoryContent.h"
 #include <QDebug>
 
-class FillContent : public MemoryContent {
+class FillContent final : public MemoryContent {
 public:
     // Constants
     static constexpr int DEFAULT_FILL = -1;

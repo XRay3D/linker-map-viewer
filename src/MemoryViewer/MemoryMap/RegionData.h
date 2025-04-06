@@ -7,6 +7,8 @@ public:
     static constexpr long DEFAULT_ADDRESS = -1;
     static constexpr long DEFAULT_SIZE = -1;
 
+    auto operator<=>(const RegionData&) const = default;
+
 private:
     // Attributes
     long address{DEFAULT_ADDRESS};
@@ -29,9 +31,9 @@ public:
     RegionData() = default;
 
     // Getters
-    long getAddress() { return address; }
-    long getSize() { return size; }
-    QString getInfo() { return info; }
+    long getAddress() const { return address; }
+    long getSize() const { return size; }
+    QString getInfo() const { return info; }
 
     // Setters
     void setAddress(long newAddress) {

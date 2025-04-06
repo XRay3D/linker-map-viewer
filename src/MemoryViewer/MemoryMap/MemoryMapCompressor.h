@@ -4,6 +4,7 @@
 #include "MemoryMap/RegionData.h"
 #include <QDebug>
 #include <QStringBuilder>
+#include <ranges>
 
 class MemoryMapCompressor {
     // Attributes - temporary storage of regiondata
@@ -14,11 +15,8 @@ class MemoryMapCompressor {
 
     // Helper functions - temporary storage of regiondata
     static bool isStored() { return (size > 0); }
-
     static void clearStorage() { size = RegionData::DEFAULT_SIZE; }
-
     static void setUsed() { used = true; }
-
     static long getEndAddress() {
         if(!isStored())
             return RegionData::DEFAULT_ADDRESS;
@@ -56,20 +54,17 @@ public:
         MemoryContentsLoader::clear();
 
         MemoryMap compressedMap;
-        for(int i = 0; i < map.getNumberOfRegions(); i++) {
+        for(int i = 0; i < map.getNumberOfRegionSize(); i++) {
             Region region = map.getRegion(i);
-            Region compressedRegion;
-            compressedRegion.setName(region.getName());
-            compressedRegion.setData(region.getData());
-            compressedRegion.setFill(region.getFill());
-            for(int j = 0; j < region.getNumberOfSubRegions(); j++) {
+            Region compressedRegion{region.getName(), region.getData(), region.getFill(), {}};
+            for(int j = 0; j < region.getNumberOfSubRegionSize(); j++) {
                 SubRegion subRegion = region.getSubRegion(j);
                 SubRegion compressedSubRegion;
                 compressedSubRegion.setName(subRegion.getName());
 
                 // Start of compression
                 clearStorage();
-                for(int k = 0; k < subRegion.getNumberOfRegionData(); k++) {
+                for(int k = 0; k < subRegion.getNumberOfRegionDataSize(); k++) {
                     RegionData regionData = subRegion.getRegionData(k);
 
                     if(isToBeStored(regionData)) {
@@ -82,7 +77,7 @@ public:
                     } else if(isToBeMerged(regionData)) {
                         // Add the merged data, keep in storage, but note that it has been used
                         long mergeSize = RegionData::DEFAULT_SIZE;
-                        if((k + 1) < subRegion.getNumberOfRegionData()) {
+                        if((k + 1) < subRegion.getNumberOfRegionDataSize()) {
                             RegionData nextRegionData = subRegion.getRegionData(k + 1);
                             if(nextRegionData.getAddress() <= getEndAddress())
                                 mergeSize = nextRegionData.getAddress() - regionData.getAddress();
@@ -107,11 +102,11 @@ public:
                 }
                 // End of compression
 
-                if(compressedSubRegion.getNumberOfRegionData() > 0)
+                if(compressedSubRegion.getNumberOfRegionDataSize() > 0)
                     compressedRegion.addSubRegion(compressedSubRegion);
             }
 
-            if(compressedRegion.getNumberOfSubRegions() > 0)
+            if(compressedRegion.getNumberOfSubRegionSize() > 0)
                 compressedMap.addRegion(compressedRegion);
         }
 

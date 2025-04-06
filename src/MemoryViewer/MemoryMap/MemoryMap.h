@@ -15,9 +15,9 @@ public:
     MemoryMap() = default;
 
     // Getters
-    int getNumberOfRegions() { return regions.size(); }
-
-    Region getRegion(int region) { return regions.at(region); }
+    const auto& getNumberOfRegions() const& { return regions; }
+    int getNumberOfRegionSize() const { return regions.size(); }
+    Region getRegion(int region) const { return regions.at(region); }
 
     // Setters
     void addRegion(Region region) {

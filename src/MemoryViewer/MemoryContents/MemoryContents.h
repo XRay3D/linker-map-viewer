@@ -22,12 +22,17 @@ public:
     MemoryContents() = default;
 
     // Getters
-    int getNumberOfIdentifierContents() { return identifierContents.size(); }
-    IdentifierContent getIdentifierContent(int identifierContent) { return identifierContents.at(identifierContent); }
-    int getNumberOfDataContents() { return dataContents.size(); }
-    DataContent getDataContent(int dataContent) { return dataContents.at(dataContent); }
-    int getNumberOfFillContents() { return fillContents.size(); }
-    FillContent getFillContent(int fillContent) { return fillContents.at(fillContent); }
+    auto getNumberOfIdentifierContents() const { return identifierContents; }
+    int getNumberOfIdentifierContentSize() const { return identifierContents.size(); }
+    IdentifierContent getIdentifierContent(int identifierContent) const { return identifierContents.at(identifierContent); }
+
+    auto getNumberOfDataContents() const { return dataContents; }
+    int getNumberOfDataContentSize() const { return dataContents.size(); }
+    DataContent getDataContent(int dataContent) const { return dataContents.at(dataContent); }
+
+    auto getNumberOfFillContents() const { return fillContents; }
+    int getNumberOfFillContentSize() const { return fillContents.size(); }
+    FillContent getFillContent(int fillContent) const { return fillContents.at(fillContent); }
 
     // Setters
     void addIdentifierContent(IdentifierContent&& identifierContent) {

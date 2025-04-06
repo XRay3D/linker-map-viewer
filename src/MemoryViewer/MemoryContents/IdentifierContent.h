@@ -2,7 +2,7 @@
 #include "MemoryContents/MemoryContent.h"
 #include <QDebug>
 
-class IdentifierContent : public MemoryContent {
+class IdentifierContent final : public MemoryContent {
 public:
     // Constants
     static constexpr QStringView UNKNOWN_IDENTIFIER = u">? ";
@@ -29,9 +29,8 @@ public:
     IdentifierContent() = default;
 
     // Getters
-    QString getIdentifier() { return identifier; }
-
-    QString getFile() { return file; }
+    QString getIdentifier() const { return identifier; }
+    QString getFile() const { return file; }
 
     // Setters
     void setIdentifier(QString newIdentifier) {

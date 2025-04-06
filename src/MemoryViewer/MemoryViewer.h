@@ -1,12 +1,14 @@
+#include "MemoryInfoFactory.h"
 #include <QMainWindow>
 
-class MemoryViewer : public QMainWindow {
-
+class MemoryViewer final : public QMainWindow {
 
     // Attributes
     class MemoryConfigurationAndContentsComponent* memoryConfigurationAndContentsComponent;
     class MemoryMapComponent* memoryMapComponent;
     class MemoryDetailsComponent* memoryDetailsComponent;
+    MemoryInfoFactory memoryInfoFactory;
+
     class QSplitter* splitter;
     // Constructor
 public:

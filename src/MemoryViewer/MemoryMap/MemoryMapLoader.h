@@ -10,44 +10,38 @@ class MemoryMapLoader {
     // Basic patterns
     static constexpr QStringView startMap = u"Linker script and memory map";
     static constexpr QStringView endMap = u"OUTPUT(";
-    static constexpr QStringView regexOfRegion = u"(\\.[a-zA-Z_][\\.a-zA-Z0-9_]*)";
-    static constexpr QStringView regexOfSubRegion = u" ([C\\.\\*]{1}\\S+( \\.\\S+)?)";
+    static constexpr QStringView regexOfRegion = uR"((\.[a-zA-Z_][\.a-zA-Z0-9_]*))";
+    static constexpr QStringView regexOfSubRegion = uR"( ([C\.\*]{1}\S+( \.\S+)?))";
     static constexpr QStringView regexOfAddress = u"(0x[a-fA-F0-9]{8})";
     static constexpr QStringView regexOfSize = u"(0x[a-fA-F0-9]+)";
     static constexpr QStringView regexOfFill = u" FILL mask (0x[a-fA-F0-9]+)";
 
     // Compiled patters
-    static inline const QRegularExpression patternOfFill{regexOfFill.toString()};
-    static inline const QRegularExpression patternFindRegion{regexOfRegion % "(.*)"};
-    static inline const QRegularExpression patternEndOfRegion = patternFindRegion;
-    static inline const QRegularExpression patternFindSubRegion{regexOfSubRegion % "(.*)"};
-    static inline const QRegularExpression patternEndOfSubRegion{" ?[C\\.\\*]{1}\\S+.*"};
-    static inline const QRegularExpression patternRegionData{"\\s+" % regexOfAddress % "\\s+" % regexOfSize % "\\s*(.*)?$"};
-    static inline const QRegularExpression patternSubRegionData{"\\s+" % regexOfAddress % "\\s+" % regexOfSize % "?\\s*(.*)$"};
+    static inline const QRegularExpression patternOfFill{"^" % regexOfFill.toString()};
+    static inline const QRegularExpression patternFindRegion{"^" % regexOfRegion % "(.*)"};
+    static inline const QRegularExpression patternEndOfRegion{patternFindRegion};
+    static inline const QRegularExpression patternFindSubRegion{"^" % regexOfSubRegion % "(.*)"};
+    static inline const QRegularExpression patternEndOfSubRegion{R"(^ ?[C\.\*]{1}\S+.*)"};
+    static inline const QRegularExpression patternRegionData{"^\\s+" % regexOfAddress % "\\s+" % regexOfSize % "\\s*(.*)?$"};
+    static inline const QRegularExpression patternSubRegionData{"^\\s+" % regexOfAddress % "\\s+" % regexOfSize % "?\\s*(.*)$"};
 
     // Helper functions - Data
     static long getAddress(QString address) {
         // e.g.: "0x00000314" returns 788
-        if(address == nullptr)
-            return RegionData::DEFAULT_ADDRESS;
-        else
-            return address.mid(2).toLong(nullptr, 16);
+        if(address.isEmpty()) return RegionData::DEFAULT_ADDRESS;
+        return address.mid(2).toLong(nullptr, 16);
     }
 
     static long getSize(QString size) {
         // e.g.: "0x4" returns 4
-        if(size == nullptr)
-            return RegionData::DEFAULT_SIZE;
-        else
-            return size.mid(2).toLong(nullptr, 16);
+        if(size.isEmpty()) return RegionData::DEFAULT_SIZE;
+        return size.mid(2).toLong(nullptr, 16);
     }
 
     static int getFill(QString fill) {
         // e.g.: "0xff" returns 255
-        if(fill == nullptr)
-            return Region::DEFAULT_FILL;
-        else
-            return fill.mid(2).toInt(nullptr, 16);
+        if(fill.isEmpty()) return Region::DEFAULT_FILL;
+        return fill.mid(2).toInt(nullptr, 16);
     }
 
     // Helper functions - Reader
@@ -56,16 +50,10 @@ class MemoryMapLoader {
 
     static QString getNextLine() {
         // Read next line (skip blank lines) and store it AND return it
-        try {
-            while(!reader->atEnd()) {
-                readerLine = reader->readLine();
-                if(readerLine.length())
-                    return readerLine;
-            }
-        } catch(std::exception e) {
-            qCritical("Error reading next line: %s", e.what());
+        while(!reader->atEnd()) {
+            readerLine = reader->readLine();
+            if(readerLine.length()) break;
         }
-
         return readerLine;
     }
 
@@ -88,7 +76,6 @@ class MemoryMapLoader {
             todoMap.addRegion(loadRegion());
             matcher = patternFindRegion.match(readerLine);
         }
-
         return todoMap;
     }
 
@@ -188,8 +175,8 @@ class MemoryMapLoader {
         return todoRegionData;
     }
 
-    // Wrapper - Loader
 public:
+    // Wrapper - Loader
     static MemoryMap load(QTextStream* bufferedReader) {
         // Wrap to other loaders, using one buffered reader
         reader = bufferedReader;

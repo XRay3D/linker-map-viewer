@@ -2,16 +2,11 @@
 #include "MemoryConfigurationAndContentsComponent.h"
 #include "MemoryDetailsComponent.h"
 #include "MemoryInfoFactory.h"
+#include "MemoryMapComponent.h"
 #include <QDebug>
 #include <QtWidgets>
 
 MemoryViewer::MemoryViewer(const QString& fileNameAndPath) {
-
-    // Create contents
-    // memoryViewerMenu = new MemoryViewerMenu();
-    // memoryConfigurationAndContentsComponent = new MemoryConfigurationAndContentsComponent();
-    // memoryMapComponent = new MemoryMapComponent();
-    // memoryDetailsComponent = new MemoryDetailsComponent();
 
     // Bind contents
     // setJMenuBar(memoryViewerMenu);
@@ -37,14 +32,13 @@ MemoryViewer::MemoryViewer(const QString& fileNameAndPath) {
     setWindowTitle("Memory Viewer");
     setCentralWidget(new QWidget{this});
 
+    // Create contents
     splitter = new QSplitter{centralWidget()};
     splitter->setObjectName("splitter");
     //////////////////////////////////////////
     splitter->addWidget(memoryConfigurationAndContentsComponent = new MemoryConfigurationAndContentsComponent{this});
     //////////////////////////////////////////
-    splitter->addWidget(new QGroupBox{"Memory Tree", this});
-    //////////////////////////////////////////
-    splitter->addWidget(new QGroupBox{"Memory Picture", this});
+    splitter->addWidget(memoryMapComponent = new MemoryMapComponent{this});
     //////////////////////////////////////////
     splitter->addWidget(memoryDetailsComponent = new MemoryDetailsComponent{this});
 
@@ -52,7 +46,7 @@ MemoryViewer::MemoryViewer(const QString& fileNameAndPath) {
     // memoryViewerMenu.addMemoryInfoUpdateListener(memoryMapComponent);
     // memoryViewerMenu.addMemoryInfoUpdateListener(memoryConfigurationAndContentsComponent);
     memoryConfigurationAndContentsComponent->addMemoryDetailsListener(memoryDetailsComponent);
-    // memoryMapComponent.addMemoryDetailsListener(memoryDetailsComponent);
+    memoryMapComponent->addMemoryDetailsListener(memoryDetailsComponent);
 
     auto layout = new QVBoxLayout{centralWidget()};
     layout->addWidget(splitter);
@@ -62,16 +56,16 @@ MemoryViewer::MemoryViewer(const QString& fileNameAndPath) {
 
     QSettings settings;
     settings.beginGroup("MemoryViewer");
-    restoreGeometry(settings.value("Geometry").toByteArray());
     restoreState(settings.value("State").toByteArray());
+    restoreGeometry(settings.value("Geometry").toByteArray());
     splitter->restoreState(settings.value("SplitterState").toByteArray());
 };
 
 MemoryViewer::~MemoryViewer() {
     QSettings settings;
     settings.beginGroup("MemoryViewer");
-    settings.setValue("Geometry", saveGeometry());
     settings.setValue("State", saveState());
+    settings.setValue("Geometry", saveGeometry());
     settings.setValue("SplitterState", splitter->saveState());
 }
 
@@ -79,7 +73,6 @@ void MemoryViewer::loadMap(const QString& fileNameAndPath) {
     if(!fileNameAndPath.isEmpty()) {
         QFile file{fileNameAndPath};
         if(file.open(QFile::ReadOnly | QFile::Text)) {
-            MemoryInfoFactory memoryInfoFactory;
             memoryInfoFactory.load(&file);
             QSettings settings;
             settings.beginGroup("MemoryViewer");
@@ -87,6 +80,7 @@ void MemoryViewer::loadMap(const QString& fileNameAndPath) {
             qInfo() << file.fileName() << "loaded.";
 
             memoryConfigurationAndContentsComponent->update(&memoryInfoFactory);
+            memoryMapComponent->update(&memoryInfoFactory);
         } else {
             qWarning() << file.errorString();
         }

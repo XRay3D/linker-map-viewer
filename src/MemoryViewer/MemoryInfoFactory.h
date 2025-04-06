@@ -48,12 +48,8 @@ public:
     // Getters
 
     MemoryConfiguration getMemoryConfiguration() { return memoryConfiguration; }
-
     MemoryContents getMemoryContents() { return memoryContents; }
-
     MemoryMap getRawMemoryMap() { return rawMemoryMap; }
-
     MemoryMap getFilteredMemoryMap() { return filteredMemoryMap; }
-
     MemoryMap getCompressedMemoryMap() { return compressedMemoryMap; }
 };

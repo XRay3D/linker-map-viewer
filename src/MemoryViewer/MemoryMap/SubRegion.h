@@ -14,6 +14,8 @@ class SubRegion {
     bool isSetName = false;
 
 public:
+    auto operator<=>(const SubRegion&) const = default;
+
     // Constructors
     SubRegion(QString name, std::vector<RegionData> data)
         : datas{data} {
@@ -23,9 +25,10 @@ public:
     SubRegion() = default;
 
     // Getters
-    QString getName() { return name; }
-    int getNumberOfRegionData() { return datas.size(); }
-    RegionData getRegionData(int regionData) { return datas.at(regionData); }
+    QString getName() const { return name; }
+    const auto& getNumberOfRegionDatas() const& { return datas; }
+    int getNumberOfRegionDataSize() const { return datas.size(); }
+    RegionData getRegionData(int regionData) const { return datas.at(regionData); }
 
     // Setters
     void setName(QString newName) {

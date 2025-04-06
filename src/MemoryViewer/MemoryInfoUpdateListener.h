@@ -1,7 +1,7 @@
 #pragma once
-#include <QDebug>
+#include "MemoryInfoFactory.h"
 
-public: interface MemoryInfoUpdateListener
-{
-    public: void update (MemoryInfoFactory memoryInfoFactory);
+struct MemoryInfoUpdateListener {
+    virtual ~MemoryInfoUpdateListener() = default;
+    virtual void update(MemoryInfoFactory* memoryInfoFactory) = 0;
 };

@@ -35,11 +35,12 @@ public:
     Region() = default;
 
     // Getters
-    QString getName() { return name; }
-    RegionData getData() { return data; }
-    int getFill() { return fill; }
-    int getNumberOfSubRegions() { return subRegions.size(); }
-    SubRegion getSubRegion(int subRegion) { return subRegions.at(subRegion); }
+    QString getName() const { return name; }
+    RegionData getData() const { return data; }
+    int getFill() const { return fill; }
+    const auto& getNumberOfSubRegions() const& { return subRegions; }
+    int getNumberOfSubRegionSize() const { return subRegions.size(); }
+    SubRegion getSubRegion(int subRegion) const { return subRegions.at(subRegion); }
 
     // Setters
     void setName(QString newName) {
@@ -68,7 +69,7 @@ public:
 
     void addSubRegion(SubRegion subRegion) {
         for(int i = 0; i < subRegions.size(); i++) {
-            if(subRegions.at(i).getNumberOfRegionData() > 0 && subRegion.getNumberOfRegionData() > 0) {
+            if(subRegions.at(i).getNumberOfRegionDataSize() > 0 && subRegion.getNumberOfRegionDataSize() > 0) {
                 if(subRegions.at(i).getRegionData(0).getAddress() > subRegion.getRegionData(0).getAddress()) {
                     subRegions.emplace(subRegions.begin() + i, std::move(subRegion));
                     return;

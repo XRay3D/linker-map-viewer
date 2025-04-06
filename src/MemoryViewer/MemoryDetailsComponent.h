@@ -14,7 +14,7 @@
 #include <QDebug>
 #include <QtWidgets>
 
-class DetailsTableModel : public QAbstractTableModel {
+class DetailsTableModel final : public QAbstractTableModel {
     // Attributes
     struct Property {
         QString property;
@@ -56,7 +56,7 @@ private:
     void load(SubRegion subRegion);
 };
 
-class MemoryDetailsComponent : public QWidget, public MemoryDetailsListener {
+class MemoryDetailsComponent final : public QWidget, public MemoryDetailsListener {
     // Details table
     DetailsTableModel* detailsTableModel;
     QTableView* detailsTable;

@@ -15,6 +15,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
 
+# find_package(QCustomPlot)
+
 find_package(QT NAMES Qt6 #[[Qt5]] REQUIRED COMPONENTS Widgets LinguistTools
                                                        Core5Compat)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools
@@ -47,8 +49,10 @@ else()
 endif()
 
 target_link_libraries(
-  MemoryViewer PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
-                       Qt${QT_VERSION_MAJOR}::Core5Compat tbb)
+  MemoryViewer
+  PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core5Compat tbb
+          # qcustomplot-qt${QT_VERSION_MAJOR}
+)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1. If
 # you are developing for iOS or macOS you should consider setting an explicit,

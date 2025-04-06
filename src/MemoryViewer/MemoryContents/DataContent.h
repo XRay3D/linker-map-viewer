@@ -2,7 +2,7 @@
 #include "MemoryContents/MemoryContent.h"
 #include <QDebug>
 
-class DataContent : public MemoryContent {
+class DataContent final : public MemoryContent {
     // Constants
     static constexpr QStringView DEFAULT_DATA = u"?";
     // Attributes

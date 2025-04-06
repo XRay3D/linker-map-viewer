@@ -1,5 +1,5 @@
 #pragma once
-#include <QDebug>
+#include <QVariant>
 
 struct MemoryDetailsListener {
     virtual ~MemoryDetailsListener() = default;

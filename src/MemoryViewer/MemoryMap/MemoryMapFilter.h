@@ -6,9 +6,9 @@ class MemoryMapFilter {
 public:
     static MemoryMap filter(MemoryMap map) {
         MemoryMap filteredMap;
-        for(int i = 0; i < map.getNumberOfRegions(); i++) {
-            Region filteredRegion = filter(map.getRegion(i));
-            if(filteredRegion.getNumberOfSubRegions() > 0)
+        for(Region filteredRegion: map.getNumberOfRegions()) {
+            filteredRegion = filter(filteredRegion);
+            if(filteredRegion.getNumberOfSubRegionSize() > 0)
                 filteredMap.addRegion(filteredRegion);
         }
         return filteredMap;
@@ -20,9 +20,9 @@ private:
         filteredRegion.setName(region.getName());
         filteredRegion.setData(region.getData());
         filteredRegion.setFill(region.getFill());
-        for(int i = 0; i < region.getNumberOfSubRegions(); i++) {
+        for(int i = 0; i < region.getNumberOfSubRegionSize(); i++) {
             SubRegion filteredSubRegion = filter(region.getSubRegion(i));
-            if(filteredSubRegion.getNumberOfRegionData() > 0)
+            if(filteredSubRegion.getNumberOfRegionDataSize() > 0)
                 filteredRegion.addSubRegion(filteredSubRegion);
         }
         return filteredRegion;
@@ -31,7 +31,7 @@ private:
     static SubRegion filter(SubRegion subRegion) {
         SubRegion filteredSubRegion;
         filteredSubRegion.setName(subRegion.getName());
-        for(int i = 0; i < subRegion.getNumberOfRegionData(); i++) {
+        for(int i = 0; i < subRegion.getNumberOfRegionDataSize(); i++) {
             RegionData filteredRegionData = subRegion.getRegionData(i);
             if(passesFilter(filteredRegionData))
                 filteredSubRegion.addData(filteredRegionData);

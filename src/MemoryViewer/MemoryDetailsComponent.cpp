@@ -118,9 +118,9 @@ void DetailsTableModel::load(MemoryContents memoryContents) {
     int oldRows = properties.size();
     properties.clear();
     properties.emplace_back(u"Type"_s, u"MemoryContents"_s);
-    properties.emplace_back(u"Number of identifiers"_s, memoryContents.getNumberOfIdentifierContents());
-    properties.emplace_back(u"Number of datas"_s, memoryContents.getNumberOfDataContents());
-    properties.emplace_back(u"Number of fills"_s, memoryContents.getNumberOfFillContents());
+    properties.emplace_back(u"Number of identifiers"_s, memoryContents.getNumberOfIdentifierContentSize());
+    properties.emplace_back(u"Number of datas"_s, memoryContents.getNumberOfDataContentSize());
+    properties.emplace_back(u"Number of fills"_s, memoryContents.getNumberOfFillContentSize());
     updateRow(oldRows, properties.size());
 }
 
@@ -128,7 +128,7 @@ void DetailsTableModel::load(MemoryMap memoryMap) {
     int oldRows = properties.size();
     properties.clear();
     properties.emplace_back(u"Type"_s, u"MemoryMap"_s);
-    properties.emplace_back(u"Number of regions"_s, memoryMap.getNumberOfRegions());
+    properties.emplace_back(u"Number of regions"_s, memoryMap.getNumberOfRegionSize());
     updateRow(oldRows, properties.size());
 }
 
@@ -142,7 +142,7 @@ void DetailsTableModel::load(Region region) {
     int oldRows = properties.size();
     properties.clear();
     properties.emplace_back(u"Type"_s, u"Region"_s);
-    properties.emplace_back(u"Number of subregions"_s, region.getNumberOfSubRegions());
+    properties.emplace_back(u"Number of subregions"_s, region.getNumberOfSubRegionSize());
     properties.emplace_back(u"Name"_s, region.getName());
     properties.emplace_back(u"Fill"_s, region.getFill());
     properties.emplace_back(u"Address"_s, toLargeHexString(region.getData().getAddress()));
@@ -188,7 +188,7 @@ void DetailsTableModel::load(SubRegion subRegion) {
     int oldRows = properties.size();
     properties.clear();
     properties.emplace_back(u"Type"_s, u"SubRegion"_s);
-    properties.emplace_back(u"Number of regiondata"_s, subRegion.getNumberOfRegionData());
+    properties.emplace_back(u"Number of regiondata"_s, subRegion.getNumberOfRegionDataSize());
     properties.emplace_back(u"Name"_s, subRegion.getName());
     updateRow(oldRows, properties.size());
 }
@@ -205,6 +205,7 @@ MemoryDetailsComponent::MemoryDetailsComponent(QWidget* parent)
     detailsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     detailsTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
     detailsTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    detailsTable->setWordWrap(false);
     auto layout = new QVBoxLayout{this};
     layout->addWidget(memoryDetailsPanel);
     layout = new QVBoxLayout{memoryDetailsPanel};
