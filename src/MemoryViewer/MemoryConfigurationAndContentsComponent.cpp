@@ -37,13 +37,13 @@ int MemoryConfigurationTableModel::columnCount(const QModelIndex&) const { retur
 
 QVariant MemoryConfigurationTableModel::data(const QModelIndex& index, int role) const {
     if(role == Qt::CheckStateRole) return memoryConfigurationEnables[index.row()] ? Qt::Checked : Qt::Unchecked;
-    if(role == Qt::DisplayRole) return memoryConfiguration.getSpace(index.row()).getName();
+    if(role == Qt::DisplayRole || role == Qt::ToolTipRole) return memoryConfiguration.getSpace(index.row()).getName();
     if(role == Qt::UserRole) return QVariant::fromValue(memoryConfiguration.getSpace(index.row()));
     return {};
 }
 
 QVariant MemoryConfigurationTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
-    if(orientation == Qt::Horizontal && role == Qt::DisplayRole) return "Name";
+    if(orientation == Qt::Horizontal && role == Qt::DisplayRole) return u"Name"_s;
     return QAbstractTableModel::headerData(section, orientation, role);
 }
 
@@ -70,7 +70,7 @@ int DefaultListModel::rowCount(const QModelIndex&) const { return data_.size(); 
 
 QVariant DefaultListModel::data(const QModelIndex& index, int role) const {
     auto& object = data_[index.row()];
-    if(role == Qt::DisplayRole) {
+    if(role == Qt::DisplayRole || role == Qt::ToolTipRole) {
         if(static const auto id = QMetaType::fromType<IdentifierContent>().id(); object.userType() == id) {
             auto identifierContent = object.value<IdentifierContent>();
             return identifierContent.getIdentifier();
@@ -79,7 +79,7 @@ QVariant DefaultListModel::data(const QModelIndex& index, int role) const {
             return dataContent.getData();
         } else if(static const auto id = QMetaType::fromType<FillContent>().id(); object.userType() == id) {
             auto fillContent = object.value<FillContent>();
-            return QString{QString::number(fillContent.getSize()) % " byte(s) of " % QString::number(fillContent.getFill())};
+            return QString{QString::number(fillContent.getSize()) % u" byte(s) of "_s % QString::number(fillContent.getFill())};
         }
     }
     if(role == Qt::EditRole) return object.typeName();
@@ -127,7 +127,7 @@ MemoryConfigurationAndContentsComponent::MemoryConfigurationAndContentsComponent
     auto layout = new QVBoxLayout{memoryConfigurationPanel};
     layout->addWidget(memoryConfigurationTable);
 
-    memoryContentsPanel = new QGroupBox{"Memory Contents", this};
+    memoryContentsPanel = new QGroupBox{u"Memory Contents"_s, this};
     memoryContentsSelectionBox = new QComboBox{memoryContentsPanel};
     memoryContentsSelectionBox->addItem(SELECTION_IDENTIFIER.toString());
     memoryContentsSelectionBox->addItem(SELECTION_DATA.toString());

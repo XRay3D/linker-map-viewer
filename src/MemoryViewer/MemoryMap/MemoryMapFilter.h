@@ -41,7 +41,7 @@ private:
 
     static bool passesFilter(RegionData regionData) {
         QString info = regionData.getInfo();
-        bool validInfo = !(info.contains(" = ") || info.contains("PROVIDE") || info.contains("ASSERT") || info.contains("linker stubs"));
+        bool validInfo = !(info.contains(u" = "_s) || info.contains(u"PROVIDE"_s) || info.contains(u"ASSERT"_s) || info.contains(u"linker stubs"_s));
         bool validAddress = (regionData.getAddress() != RegionData::DEFAULT_ADDRESS);
 
         return validInfo && validAddress;

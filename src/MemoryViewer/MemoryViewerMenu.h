@@ -30,8 +30,8 @@ class MemoryViewerMenu:public JMenuBar implements ActionListener
         memoryInfoUpdateListeners = new std::vector<MemoryInfoUpdateListener>();
 		
 		// Create contents
-		menuFile = new JMenu("File");
-		menuItemLoad = new JMenuItem("Load");
+		menuFile = new JMenu(u"File"_s);
+		menuItemLoad = new JMenuItem(u"Load"_s);
 		
 		// Add listeners
 		menuItemLoad.addActionListener(this);
@@ -59,7 +59,7 @@ class MemoryViewerMenu:public JMenuBar implements ActionListener
 		if (e.getSource() == menuItemLoad) {
 			
 			// Load a file
-			FileNameExtensionFilter extensionFilter = new FileNameExtensionFilter("map files (*.map)", "map");
+			FileNameExtensionFilter extensionFilter = new FileNameExtensionFilter(u"map files (*.map)"_s, u"map"_s);
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setFileFilter(extensionFilter);
 			if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {

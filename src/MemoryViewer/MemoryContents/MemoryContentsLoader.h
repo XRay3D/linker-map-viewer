@@ -12,7 +12,7 @@ class MemoryContentsLoader {
 
     // Helper functions - Data
     static int getFill(QString fill) {
-        // e.g.: "ff" returns 255
+        // e.g.: u"ff"_s returns 255
         if(fill.isEmpty())
             return FillContent::DEFAULT_FILL;
         else if(fill.isEmpty())
@@ -39,7 +39,7 @@ public:
 
     static void addOtherContent(long address, long size, QString info, QString subRegionName) {
         // Determine type of content (identifier, data or fill)
-        if((info.contains("/") || info.contains("\\"))) {
+        if((info.contains(u"/"_s) || info.contains(u"\\"_s))) {
             addIdentifierContent(address, size, IdentifierContent::UNKNOWN_IDENTIFIER % subRegionName, info);
         } else if(subRegionName == fillContent) {
             addFillContent(address, size, getFill(info));

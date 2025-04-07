@@ -18,23 +18,23 @@ MemoryViewer::MemoryViewer(const QString& fileNameAndPath) {
     // memoryDetailsPane.setRightComponent(memoryDetailsComponent);
     // getContentPane().add(memoryDetailsPane);
 
-    auto fileMenu = menuBar()->addMenu("File");
+    auto fileMenu = menuBar()->addMenu(u"File"_s);
     fileMenu->addAction(
-        QIcon::fromTheme(QIcon::ThemeIcon::DocumentOpen), "Load", QKeySequence::Open,
+        QIcon::fromTheme(QIcon::ThemeIcon::DocumentOpen), u"Load"_s, QKeySequence::Open,
         this, [this] {
             QSettings settings;
-            settings.beginGroup("MemoryViewer");
-            auto fileName = QFileDialog::getOpenFileName(this, "Open Map File", settings.value("fileNameAndPath").toString(), "map files (*.map)");
+            settings.beginGroup(u"MemoryViewer"_s);
+            auto fileName = QFileDialog::getOpenFileName(this, u"Open Map File"_s, settings.value(u"fileNameAndPath"_s).toString(), u"map files (*.map)"_s);
             if(fileName.size()) loadMap(fileName);
         });
 
     // Setup frame
-    setWindowTitle("Memory Viewer");
+    setWindowTitle(u"Memory Viewer"_s);
     setCentralWidget(new QWidget{this});
 
     // Create contents
     splitter = new QSplitter{centralWidget()};
-    splitter->setObjectName("splitter");
+    splitter->setObjectName(u"splitter"_s);
     //////////////////////////////////////////
     splitter->addWidget(memoryConfigurationAndContentsComponent = new MemoryConfigurationAndContentsComponent{this});
     //////////////////////////////////////////
@@ -55,18 +55,18 @@ MemoryViewer::MemoryViewer(const QString& fileNameAndPath) {
     loadMap(fileNameAndPath);
 
     QSettings settings;
-    settings.beginGroup("MemoryViewer");
-    restoreState(settings.value("State").toByteArray());
-    restoreGeometry(settings.value("Geometry").toByteArray());
-    splitter->restoreState(settings.value("SplitterState").toByteArray());
+    settings.beginGroup(u"MemoryViewer"_s);
+    restoreState(settings.value(u"State"_s).toByteArray());
+    restoreGeometry(settings.value(u"Geometry"_s).toByteArray());
+    splitter->restoreState(settings.value(u"SplitterState"_s).toByteArray());
 };
 
 MemoryViewer::~MemoryViewer() {
     QSettings settings;
-    settings.beginGroup("MemoryViewer");
-    settings.setValue("State", saveState());
-    settings.setValue("Geometry", saveGeometry());
-    settings.setValue("SplitterState", splitter->saveState());
+    settings.beginGroup(u"MemoryViewer"_s);
+    settings.setValue(u"State"_s, saveState());
+    settings.setValue(u"Geometry"_s, saveGeometry());
+    settings.setValue(u"SplitterState"_s, splitter->saveState());
 }
 
 void MemoryViewer::loadMap(const QString& fileNameAndPath) {
@@ -75,9 +75,9 @@ void MemoryViewer::loadMap(const QString& fileNameAndPath) {
         if(file.open(QFile::ReadOnly | QFile::Text)) {
             memoryInfoFactory.load(&file);
             QSettings settings;
-            settings.beginGroup("MemoryViewer");
-            settings.setValue("fileNameAndPath", fileNameAndPath);
-            qInfo() << file.fileName() << "loaded.";
+            settings.beginGroup(u"MemoryViewer"_s);
+            settings.setValue(u"fileNameAndPath"_s, fileNameAndPath);
+            qInfo() << file.fileName() << u"loaded."_s;
 
             memoryConfigurationAndContentsComponent->update(&memoryInfoFactory);
             memoryMapComponent->update(&memoryInfoFactory);

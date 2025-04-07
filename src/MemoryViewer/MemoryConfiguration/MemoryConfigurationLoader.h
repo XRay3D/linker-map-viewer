@@ -17,7 +17,7 @@ class MemoryConfigurationLoader {
     static constexpr QStringView regexOfAttributes = u"(x?)(r?)(w?)";
 
     // Compiled patterns
-    static inline const QRegularExpression patternOfSpace{regexOfName % "\\s+" % regexOfOrigin % "\\s+" % regexOfLength % "\\s*" % regexOfAttributes};
+    static inline const QRegularExpression patternOfSpace{regexOfName % u"\\s+"_s % regexOfOrigin % u"\\s+"_s % regexOfLength % u"\\s*"_s % regexOfAttributes};
 
     // Helper function - Data
     static long getOrigin(QString origin) {

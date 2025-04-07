@@ -11,7 +11,7 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext& context, const Q
     QMessageLogContext& context_ = const_cast<QMessageLogContext&>(context);
     if(context.file) {
         std::string_view file{context.file};
-        if(auto last = file.find_last_of("\\/"); std::string_view::npos != last)
+        if(auto last = file.find_last_of(R"(\/)"); std::string_view::npos != last)
             context_.file += last + 1;
     }
     // if(App) {
@@ -27,9 +27,9 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext& context, const Q
     //     emit App->logging(color, message);
     // }
 
-    // static QRegularExpression re{R"(.+38;2;(\d+);(\d+);(\d+)m.+)"};
+    // static QRegularExpression re{Ru"(.+38;2;(\d+);(\d+);(\d+)m.+)"_s};
     // QString data{context_.function};
-    // data.replace(QRegularExpression(R"((\w+\:\:))"), "");
+    // data.replace(QRegularExpression(Ru"((\w+\:\:))"_s), "");
     // context_.function = data.toUtf8().data();
     messageHandler(type, context_, message);
 };
@@ -55,22 +55,22 @@ int main(int argc, char* argv[]) {
         "\x1b[38;2;64;64;64m <- %{function} <- %{file} : %{line}\x1b[0m"});
 
     QApplication a{argc, argv};
-    QApplication::setApplicationName("MapViewer");
-    QApplication::setOrganizationName("XrSofr");
+    QApplication::setApplicationName(u"MapViewer"_s);
+    QApplication::setOrganizationName(u"XrSofr"_s);
 
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
     for(const QString& locale: uiLanguages) {
-        const QString baseName = "MemoryViewer_" + QLocale(locale).name();
-        if(translator.load(":/i18n/" + baseName)) {
+        const QString baseName = u"MemoryViewer_"_s + QLocale(locale).name();
+        if(translator.load(u":/i18n/"_s + baseName)) {
             a.installTranslator(&translator);
             break;
         }
     }
 
     QSettings settings;
-    settings.beginGroup("MemoryViewer");
-    MemoryViewer w{settings.value("fileNameAndPath").toString()};
+    settings.beginGroup(u"MemoryViewer"_s);
+    MemoryViewer w{settings.value(u"fileNameAndPath"_s).toString()};
     w.show();
     return a.exec();
 };

@@ -1,4 +1,5 @@
 #include "MemoryMapComponent.h"
+#include <cxxabi.h>
 
 TreeNode::TreeNode(QVariant data)
     : data_{data} { }
@@ -16,14 +17,32 @@ int TreeNode::columnCount() const { return 1; }
 
 int TreeNode::childCount() const { return children.size(); }
 
+QString demangle(QStringView str) {
+    QString retStr;
+    auto split = str.split('.');
+    for(char space[]{0, 0}; auto&& name: split) {
+        retStr += space, *space = '.';
+        if(name.startsWith('_')) {
+            int status;
+            size_t sz{};
+            char* ret = abi::__cxa_demangle(name.toUtf8().data(), nullptr /*function*/, &sz, &status);
+            retStr += (!status && ret) ? QString::fromUtf8(ret) : name;
+            // qWarning() << status << sz << ret;
+            free(ret);
+        } else {
+            retStr += name;
+        }
+    }
+    return retStr;
+};
 QVariant TreeNode::data(int column, int role) const {
-    if(role == Qt::DisplayRole) {
+    if(role == Qt::DisplayRole || role == Qt::ToolTipRole) {
         if(static const auto id = QMetaType::fromType<MemoryMap>().id(); data_.userType() == id) {
             return u"Memory Map"_s;
         } else if(static const auto id = QMetaType::fromType<Region>().id(); data_.userType() == id) {
-            return u"Region: "_s + data_.value<Region>().getName();
+            return u"Region: "_s + demangle(data_.value<Region>().getName());
         } else if(static const auto id = QMetaType::fromType<SubRegion>().id(); data_.userType() == id) {
-            return u"SubRegion: "_s + data_.value<SubRegion>().getName();
+            return u"SubRegion: "_s + demangle(data_.value<SubRegion>().getName());
         } else if(static const auto id = QMetaType::fromType<RegionData>().id(); data_.userType() == id) {
             auto regionData = data_.value<RegionData>();
             return u"Regiondata @ 0x"_s + QString::number(0x100000000L | (regionData.getAddress() & 0xFFFFFFFF)).mid(1).toUpper();
@@ -92,7 +111,7 @@ Qt::ItemFlags MemoryMapTreeModel::flags(const QModelIndex& index) const {
 
 MemoryMapTree::MemoryMapTree(QWidget* parent)
     : QTreeView{parent} {
-    memoryMapTreeModel = new MemoryMapTreeModel{this}; // , new TreeNode("No map loaded..."));
+    memoryMapTreeModel = new MemoryMapTreeModel{this}; // , new TreeNode(u"No map loaded..."_s));
     setSelectionMode(SingleSelection);
     setModel(memoryMapTreeModel);
     setRootIsDecorated(true);
@@ -264,6 +283,8 @@ MemoryMapComponent::MemoryMapComponent(QWidget* parent)
     // memoryPicturePanel.setPreferredSize(300, 700);
 
     connect(memoryMapTree, &QAbstractItemView::clicked,
+        this, &MemoryMapComponent::notifyMemoryDetailsListeners);
+    connect(memoryMapTree->selectionModel(), &QItemSelectionModel::currentChanged,
         this, &MemoryMapComponent::notifyMemoryDetailsListeners);
     connect(memoryMapSelectionBox, &QComboBox::currentIndexChanged,
         this, &MemoryMapComponent::itemStateChanged);

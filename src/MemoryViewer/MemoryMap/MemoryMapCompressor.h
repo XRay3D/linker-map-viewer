@@ -44,7 +44,7 @@ class MemoryMapCompressor {
     }
 
     static RegionData merge(RegionData regionData, long mergeSize) {
-        return RegionData{regionData.getAddress(), mergeSize, regionData.getInfo() % " (" % info % ")"};
+        return RegionData{regionData.getAddress(), mergeSize, regionData.getInfo() % u" ("_s % info % u")"_s};
     }
 
     // Method to compress maps
@@ -93,7 +93,7 @@ public:
                     }
                     // else
                     //{
-                    //	System.out.println("Unexpected data format while compressing...");
+                    //	System.out.println(u"Unexpected data format while compressing..."_s);
                     // }
                 }
                 if(isLeftToBeAdded()) {

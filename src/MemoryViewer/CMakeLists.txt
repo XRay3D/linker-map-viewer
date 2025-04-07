@@ -40,7 +40,7 @@ else()
   if(ANDROID)
     add_library(MemoryViewer SHARED ${PROJECT_SOURCES})
     # Define properties for Android with Qt 5 after find_package() calls as:
-    # set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
+    # set(ANDROID_PACKAGE_SOURCE_DIR u"${CMAKE_CURRENT_SOURCE_DIR}/android"_s)
   else()
     add_executable(MemoryViewer ${PROJECT_SOURCES})
   endif()

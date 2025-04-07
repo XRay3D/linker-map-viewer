@@ -20,26 +20,26 @@ class MemoryMapLoader {
     static inline const QRegularExpression patternOfFill{"^" % regexOfFill.toString()};
     static inline const QRegularExpression patternFindRegion{"^" % regexOfRegion % "(.*)"};
     static inline const QRegularExpression patternEndOfRegion{patternFindRegion};
-    static inline const QRegularExpression patternFindSubRegion{"^" % regexOfSubRegion % "(.*)"};
+    static inline const QRegularExpression patternFindSubRegion{"^" % regexOfSubRegion % u"(.*)"};
     static inline const QRegularExpression patternEndOfSubRegion{R"(^ ?[C\.\*]{1}\S+.*)"};
-    static inline const QRegularExpression patternRegionData{"^\\s+" % regexOfAddress % "\\s+" % regexOfSize % "\\s*(.*)?$"};
-    static inline const QRegularExpression patternSubRegionData{"^\\s+" % regexOfAddress % "\\s+" % regexOfSize % "?\\s*(.*)$"};
+    static inline const QRegularExpression patternRegionData{R"(^\s+)" % regexOfAddress % R"(\s+)" % regexOfSize % R"(\s*(.*)?$)"};
+    static inline const QRegularExpression patternSubRegionData{R"(^\s+)" % regexOfAddress % R"(\s+)" % regexOfSize % R"(?\s*(.*)$)"};
 
     // Helper functions - Data
     static long getAddress(QString address) {
-        // e.g.: "0x00000314" returns 788
+        // e.g.: u"0x00000314"_s returns 788
         if(address.isEmpty()) return RegionData::DEFAULT_ADDRESS;
         return address.mid(2).toLong(nullptr, 16);
     }
 
     static long getSize(QString size) {
-        // e.g.: "0x4" returns 4
+        // e.g.: u"0x4"_s returns 4
         if(size.isEmpty()) return RegionData::DEFAULT_SIZE;
         return size.mid(2).toLong(nullptr, 16);
     }
 
     static int getFill(QString fill) {
-        // e.g.: "0xff" returns 255
+        // e.g.: u"0xff"_s returns 255
         if(fill.isEmpty()) return Region::DEFAULT_FILL;
         return fill.mid(2).toInt(nullptr, 16);
     }

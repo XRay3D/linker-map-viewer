@@ -11,7 +11,7 @@ int DetailsTableModel::rowCount(const QModelIndex&) const { return properties.si
 int DetailsTableModel::columnCount(const QModelIndex&) const { return 2; }
 
 QVariant DetailsTableModel::data(const QModelIndex& index, int role) const {
-    if(role == Qt::DisplayRole) {
+    if(role == Qt::DisplayRole || role == Qt::ToolTipRole) {
         if(!index.column()) return properties[index.row()].property;
         else return properties[index.row()].value;
     }

@@ -1,3 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version=u"1.0"_s encoding=u"utf-8"_s?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ru_RU"></TS>
+<TS version=u"2.1"_s language=u"ru_RU"_s></TS>

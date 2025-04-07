@@ -1,6 +1,5 @@
 #pragma once
 #include <QDebug>
-
 using namespace Qt::Literals;
 
 class MemoryContent {
